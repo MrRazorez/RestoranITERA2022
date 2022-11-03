@@ -1,0 +1,16 @@
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">" !important;
+    align-self: baseline;
+    color: #7d8daa;
+}
+
+.breadcrumb-item{
+    font-size: 17pt;
+}
+
+.breadcrumb-item a{
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+}
+
