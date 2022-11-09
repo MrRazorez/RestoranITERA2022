@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
@@ -13,7 +14,26 @@ const Home = () => {
 
   const handleClose = () => setShow(false);
 
-  const data = ["sate", "petis", "gudek", "bakso", "jus", "dessert badai"];
+  //const data = ["sate", "petis", "gudek", "bakso", "jus", "dessert badai"];
+  const [menu, setMenu] = useState([]);
+
+  const callAPI = async () => {
+    try {
+      var res = await axios.get('http://localhost:8000/menu');
+      setMenu(res.data.menu);
+    } catch (error) {
+      console.log(error);
+      alert(error.response.data.status);
+    }
+  }
+
+  useEffect(() => {callAPI()}, []);
+
+  let usDollar = Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+  });
+
   return (
     <>
       <Container className="my-5">
@@ -40,13 +60,13 @@ const Home = () => {
         </Row>
 
         <Row>
-          {data.map((e, i) => {
+          {menu.map((e, i) => {
             return (
               <Col className="my-1 col-6" xl={3} md={4} sm={6} key={i}>
                 <div
                   className="btn"
                   onClick={() => {
-                    setpopup(e);
+                    setpopup(e.nama);
                     setShow(true);
                   }}
                 >
@@ -56,8 +76,8 @@ const Home = () => {
                       src="https://asset-a.grid.id//crop/0x0:0x0/700x465/photo/2021/07/13/gambar-ilustrasi-bisa-memperjela-20210713123218.jpg"
                     />
                     <Card.Body className="text-center">
-                      <Card.Title>Sate</Card.Title>
-                      <Card.Text>Rp. 20.000</Card.Text>
+                      <Card.Title>{e.nama}</Card.Title>
+                      <Card.Text>{usDollar.format(e.harga)}</Card.Text>
                     </Card.Body>
                   </Card>
                 </div>
