@@ -19,19 +19,23 @@ const Home = () => {
   };
   const handleCart = () => {
     if (localStorage.getItem('cart') === null) {
-      var cart = [{
+      var cart = [{total: popupHarga},{
         nama: popupNama,
-        harga: popupHarga
+        harga: popupHarga,
       }];
       localStorage.setItem('cart', JSON.stringify({data: cart}));
     } else {
-      var currCart = JSON.parse(localStorage.getItem('cart')).data;
+      var currCart = JSON.parse(localStorage.getItem('cart'));
 
-      currCart.push({
+      currCart.data[0] = {
+        total: currCart.data[0].total + popupHarga
+      }
+
+      currCart.data.push({
         nama: popupNama,
         harga: popupHarga
       });
-      localStorage.setItem('cart', JSON.stringify({data: currCart}));
+      localStorage.setItem('cart', JSON.stringify({data: currCart.data}));
     }
     handleClose();
   };

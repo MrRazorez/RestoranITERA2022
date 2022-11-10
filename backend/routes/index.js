@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var { getDatabase, ref, onValue } = require('firebase/database');
+var { getDatabase, ref, onValue, push } = require('firebase/database');
 var firebase = require('../config-firebase');
 var db = getDatabase(firebase);
 
@@ -26,6 +26,21 @@ router.get('/menu', function(req, res, next) {
       res.status(200).json({menu: data[0]});
     } else {
       res.status(404).json({status: "Sedang menyiapkan data...."});
+    }
+  } catch (error) {
+    res.status(404).json({status: error});
+  }
+})
+
+router.post('/order', function(req, res, next) {
+  try {
+    console.log(req.body.order);
+    if (req.body.order.nama !== '' && req.body.order.data !== null) {
+      var order = ref(db, 'transaksi');
+      push(order, req.body.order);
+      res.status(200).json({status: "Data berhasil masuk"});
+    } else {
+      res.status(403).json({status: "Masukkan data yang kosong!"});
     }
   } catch (error) {
     res.status(404).json({status: error});

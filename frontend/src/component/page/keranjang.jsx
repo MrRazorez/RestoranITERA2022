@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container } from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
@@ -8,9 +8,70 @@ import Col from "react-bootstrap/Col";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { BsFillTrashFill } from "react-icons/bs";
 import { uangRupiah } from "./currency";
+import axios from "axios";
+
 
 const Keranjang = () => {
-  var currCart = JSON.parse(localStorage.getItem('cart')).data;
+  var currCart = JSON.parse(localStorage.getItem('cart'));
+  var total = 0;
+  if (currCart != null) {
+    total = currCart.data[0].total;
+    currCart.data = currCart.data.slice(1, currCart.length);
+  }
+
+  var [customer, setCustomer] = useState('');
+
+  const orderNow = async () => {
+    try {
+      await axios.post('http://localhost:8000/order', {
+        order: {nama: customer, data: currCart.data}
+      }).then(
+        (res) => {
+          notification(res.data.status);
+          localStorage.clear();
+        }
+      );
+    } catch (error) {
+      if (error.response.data.status) {
+        window.alert(error.response.data.status);
+      } else {
+        console.log(error);
+      }
+    }
+  }
+
+  const notification = async (status) => {
+    // create and show the notification
+    const showNotification = () => {
+        // create a new notification
+        const notification = new Notification('Pesan dari Syran Resto', {
+            body: status
+        });
+
+        // close the notification after 5 seconds and navigate to Home Screen
+        setTimeout(() => {
+            notification.close();
+            window.location.replace("/");
+        }, 5 * 1000);
+
+        // navigate to a Home Screen when clicked
+        notification.onclick = () => window.location.replace("/");
+    }
+
+    // check notification permission
+    let granted = false;
+
+    if (Notification.permission === 'granted') {
+        granted = true;
+    } else if (Notification.permission !== 'denied') {
+        let permission = await Notification.requestPermission();
+        granted = permission === 'granted' ? true : false;
+    }
+
+    // show notification or error
+    granted ? showNotification() : console.log("Anda harus izinkan Notifikasi dalam browser anda!");
+  }
+
   return (
     <Container className="mt-5">
       <Row>
@@ -25,12 +86,15 @@ const Keranjang = () => {
               aria-label="nama"
               aria-describedby="basic-addon1"
               style={{ backgroundColor: "#E9E9E9" }}
+              value={customer}
+              onChange={(data => setCustomer(data.target.value))}
             />
           </InputGroup>
         </Row>
 
         {/* Detail */}
-        {currCart.map((e, i) => { return(
+        { currCart != null ? currCart.data.map((e, i) => { 
+          return(
         <Row className="border border-1 shadow-sm mx-3 p-3 mb-3">
           <Col className="p-2 d-flex justify-content-center">
             <img
@@ -62,7 +126,10 @@ const Keranjang = () => {
           </Col>
         </Row>
         );
-        })}
+        }) : 
+        <Row>
+        </Row>
+        }
 
         {/* Total */}
         <Row className="border border-1 shadow-sm mx-3 p-3">
@@ -81,10 +148,10 @@ const Keranjang = () => {
             <h5>Total</h5>
           </Col>
           <Col className="d-flex justify-content-center align-items-center">
-            <h5>Rp. 3.000</h5>
+            <h5>{uangRupiah(total)}</h5>
           </Col>
           <Col className="d-flex justify-content-center align-items-center">
-            <Button>Pesan Sekarang</Button>
+            <Button onClick={() => orderNow()}>Pesan Sekarang</Button>
           </Col>
         </Row>
       </Row>
