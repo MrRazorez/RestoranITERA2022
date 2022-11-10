@@ -25,7 +25,7 @@ router.get('/menu', function(req, res, next) {
     if (data[0] != null) {
       res.status(200).json({menu: data[0]});
     } else {
-      res.status(404).json({status: "Terjadi persiapan load data. Silahkan refresh request!"});
+      res.status(404).json({status: "Sedang menyiapkan data...."});
     }
   } catch (error) {
     res.status(404).json({status: error});

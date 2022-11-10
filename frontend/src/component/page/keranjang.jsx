@@ -7,8 +7,10 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { BsFillTrashFill } from "react-icons/bs";
+import { uangRupiah } from "./currency";
 
 const Keranjang = () => {
+  var currCart = JSON.parse(localStorage.getItem('cart')).data;
   return (
     <Container className="mt-5">
       <Row>
@@ -28,6 +30,7 @@ const Keranjang = () => {
         </Row>
 
         {/* Detail */}
+        {currCart.map((e, i) => { return(
         <Row className="border border-1 shadow-sm mx-3 p-3 mb-3">
           <Col className="p-2 d-flex justify-content-center">
             <img
@@ -37,8 +40,8 @@ const Keranjang = () => {
             />
           </Col>
           <Col className="p-2 d-flex flex-column align-items-center justify-content-center">
-            <h5>Sate</h5>
-            <h6>Rp. 2000 /porsi</h6>
+            <h5>{e.nama}</h5>
+            <h6>{uangRupiah(e.harga)} /porsi</h6>
           </Col>
           <Col className="p-2 d-flex align-items-center justify-content-center">
             <Button variant="outline-primary">
@@ -50,7 +53,7 @@ const Keranjang = () => {
             </Button>
           </Col>
           <Col className="p-2 d-flex align-items-center justify-content-center">
-            <h5>Rp. 2000,-00</h5>
+            <h5>{uangRupiah(e.harga)}</h5>
           </Col>
           <Col className="p-2 d-flex justify-content-center align-items-center">
             <Button variant="outline-danger">
@@ -58,6 +61,8 @@ const Keranjang = () => {
             </Button>
           </Col>
         </Row>
+        );
+        })}
 
         {/* Total */}
         <Row className="border border-1 shadow-sm mx-3 p-3">

@@ -7,14 +7,35 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Modal from "react-bootstrap/Modal";
+import { uangRupiah } from "./currency";
 
 const Home = () => {
   const [show, setShow] = useState(false);
-  const [popup, setpopup] = useState();
+  const [popupNama, setPopupNama] = useState();
+  const [popupHarga, setPopupHarga] = useState();
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+  };
+  const handleCart = () => {
+    if (localStorage.getItem('cart') === null) {
+      var cart = [{
+        nama: popupNama,
+        harga: popupHarga
+      }];
+      localStorage.setItem('cart', JSON.stringify({data: cart}));
+    } else {
+      var currCart = JSON.parse(localStorage.getItem('cart')).data;
 
-  //const data = ["sate", "petis", "gudek", "bakso", "jus", "dessert badai"];
+      currCart.push({
+        nama: popupNama,
+        harga: popupHarga
+      });
+      localStorage.setItem('cart', JSON.stringify({data: currCart}));
+    }
+    handleClose();
+  };
+
   const [menu, setMenu] = useState([]);
 
   const callAPI = async () => {
@@ -22,17 +43,17 @@ const Home = () => {
       var res = await axios.get('http://localhost:8000/menu');
       setMenu(res.data.menu);
     } catch (error) {
-      console.log(error);
-      alert(error.response.data.status);
+      console.log(error.response);
+      if (error.code === "ERR_NETWORK") {
+        alert("Terjadi kesalahan server. Silahkan refresh kembali!");
+      } else if (error.code === "ERR_BAD_REQUEST") {
+        alert(error.response.data.status);
+        document.location.reload();
+      }
     }
   }
 
   useEffect(() => {callAPI()}, []);
-
-  let usDollar = Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-  });
 
   return (
     <>
@@ -66,7 +87,8 @@ const Home = () => {
                 <div
                   className="btn"
                   onClick={() => {
-                    setpopup(e.nama);
+                    setPopupNama(e.nama);
+                    setPopupHarga(e.harga);
                     setShow(true);
                   }}
                 >
@@ -77,7 +99,7 @@ const Home = () => {
                     />
                     <Card.Body className="text-center">
                       <Card.Title>{e.nama}</Card.Title>
-                      <Card.Text>{usDollar.format(e.harga)}</Card.Text>
+                      <Card.Text>{uangRupiah(e.harga)}</Card.Text>
                     </Card.Body>
                   </Card>
                 </div>
@@ -90,12 +112,13 @@ const Home = () => {
           <Modal.Header closeButton>
             <Modal.Title>Modal heading</Modal.Title>
           </Modal.Header>
-          <Modal.Body> {popup} </Modal.Body>
+          <Modal.Body> {popupNama} </Modal.Body>
+          <Modal.Body> {uangRupiah(popupHarga)} </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleClose}>
+            <Button variant="primary" onClick={handleCart}>
               Tambah Ke Keranjang
             </Button>
           </Modal.Footer>
