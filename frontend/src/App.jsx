@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // User Component
+//import Home from "./component/page/cobaHome";
 import Home from "./component/page/home";
 import Fasilitas from "./component/page/fasilitas";
 import Feedback from "./component/page/feedback";
@@ -50,7 +51,7 @@ function App() {
             ></Route>
             <Route path="menu" element={<MenuAdmin />}></Route>
             <Route path="tambah" element={<Add />} />
-            <Route path="edit" element={<Edit />} />
+            <Route path="edit/:uid" element={<Edit />} />
             <Route path="detail" element={<Detail />} />
             <Route path="laporan" element={<LaporanAdmin />} />
           </Route>

@@ -1,11 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var { getDatabase, ref, onValue, push } = require('firebase/database');
-var firebase = require('../config-firebase');
-var db = getDatabase(firebase);
-
-var menu = ref(db, 'menu');
+var menuController = require('../controllers/menuController');
+var menuControlled = new menuController();
 
 router.get('/', function(req, res, next) {
   res.status(200).json({
@@ -15,36 +12,48 @@ router.get('/', function(req, res, next) {
 
 router.get('/menu', function(req, res, next) {
   try {
-    var data = [];
-    onValue(menu, async (snap) => {
-      await data.push(snap.val());
-    }, (error) => {
-      res.status(404).json({status: error});
-    });
-
-    if (data[0] != null) {
-      res.status(200).json({menu: data[0]});
-    } else {
-      res.status(404).json({status: "Sedang menyiapkan data...."});
-    }
+    menuControlled.getMenu();
+    res.status(200).json({menu: menuControlled.menu});
   } catch (error) {
     res.status(404).json({status: error});
   }
-})
+});
 
-router.post('/order', function(req, res, next) {
+router.get('/menu/:uid', function(req, res, next) {
   try {
-    console.log(req.body.order);
-    if (req.body.order.nama !== '' && req.body.order.data !== null) {
-      var order = ref(db, 'transaksi');
-      push(order, req.body.order);
-      res.status(200).json({status: "Data berhasil masuk"});
-    } else {
-      res.status(403).json({status: "Masukkan data yang kosong!"});
-    }
+    (async () => {
+      res.status(200).json({menu: await menuControlled.getSpecMenu(req.params['uid'])});
+    })(null);
   } catch (error) {
     res.status(404).json({status: error});
   }
-})
+});
+
+router.post('/addmenu', function(req, res, next) {
+  try {
+    menuControlled.insertMenu(req.body);
+    res.status(200).json({status: "Berhasil"});
+  } catch (error) {
+    res.status(404).json({status: error});
+  }
+});
+
+router.put('/updatemenu/:uid', function(req, res, next) {
+  try {
+    menuControlled.updateMenu(req.params['uid'], req.body);
+    res.status(200).json({status: "Berhasil"});
+  } catch (error) {
+    res.status(404).json({status: error});
+  }
+});
+
+router.delete('/deletemenu/:uid', function(req, res, next) {
+  try {
+    menuControlled.deleteMenu(req.params['uid']);
+    res.status(200).json({status: "Berhasil"});
+  } catch (error) {
+    res.status(404).json({status: error});
+  }
+});
 
 module.exports = router;

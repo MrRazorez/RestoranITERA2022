@@ -1,61 +1,94 @@
+import axios from "axios";
 import React from "react";
 import { Row, Col, Form, Button } from "react-bootstrap";
 
-const Add = () => {
-  return (
-    <div>
-      <h4 className="mb-5">Menu</h4>
-      <Row className="mb-3">
-        <Col className="pe-5">
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <h6 className="mb-3">Nama Menu</h6>
-            <Form.Control
-              type="text"
-              style={{ backgroundColor: "#D9D9D9" }}
-              placeholder="Masukkan Nama Menu"
-            />
-          </Form.Group>
-        </Col>
-        <Col>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <h6 className="mb-3">Jenis Menu</h6>
-            <Form.Select
-              aria-label="Default select example"
-              style={{ backgroundColor: "#D9D9D9" }}
-            >
-              <option>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </Form.Select>
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row className="mb-3">
-        <Col className="pe-5">
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <h6 className="mb-3">Harga</h6>
-            <Form.Control
-              type="text"
-              style={{ backgroundColor: "#D9D9D9" }}
-              placeholder="Masukkan Nama Menu"
-            />
-          </Form.Group>
-        </Col>
-        <Col></Col>
-      </Row>
+class Add extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      nama: '',
+      jenis: 'food',
+      harga: '',
+    }
+  }
 
-      <Row className="mb-3">
-        <Col>
-          {/* <Button variant="primary">Pilih Gambar</Button> */}
-          <input type="file" />
-        </Col>
-        <Col></Col>
-      </Row>
+  async uploadMenu() {
+    if (this.state.nama === '' && this.state.harga === '' && this.state.foto === null) {
+      return;
+    }
 
-      <Button variant="danger">Tambah Menu</Button>
-    </div>
-  );
+    try {
+      await axios.post('http://localhost:8000/addmenu', this.state).then(
+        (res) => {
+          console.log(res.data.status);
+        }
+      )
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <h4 className="mb-5">Menu</h4>
+        <Row className="mb-3">
+          <Col className="pe-5">
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <h6 className="mb-3">Nama Menu</h6>
+              <Form.Control
+                type="text"
+                style={{ backgroundColor: "#D9D9D9" }}
+                placeholder="Masukkan Nama Menu"
+                value={this.state.nama}
+                onChange={(data => this.setState({nama: data.target.value}))}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <h6 className="mb-3">Jenis Menu</h6>
+              <Form.Select
+                aria-label="Default select example"
+                style={{ backgroundColor: "#D9D9D9" }}
+                value={this.state.jenis}
+                onChange={(data => this.setState({jenis: data.target.value}))}
+              >
+                <option value="food">Food</option>
+                <option value="drink">Drink</option>
+                <option value="dessert">Dessert</option>
+              </Form.Select>
+            </Form.Group>
+          </Col>
+        </Row>
+        <Row className="mb-3">
+          <Col className="pe-5">
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <h6 className="mb-3">Harga</h6>
+              <Form.Control
+                type="text"
+                style={{ backgroundColor: "#D9D9D9" }}
+                placeholder="Masukkan Harga Menu"
+                value={this.state.harga}
+                onChange={(data => this.setState({harga: data.target.value}))}
+              />
+            </Form.Group>
+          </Col>
+          <Col></Col>
+        </Row>
+
+        <Row className="mb-3">
+          <Col>
+            {/* <Button variant="primary">Pilih Gambar</Button> */}
+            <input type="file"/>
+          </Col>
+          <Col></Col>
+        </Row>
+
+        <Button variant="danger" onClick={() => {this.uploadMenu();window.location.assign('/admin/menu')}}>Tambah Menu</Button>
+      </div>
+    );
+  };
 };
 
 export default Add;
