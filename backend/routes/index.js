@@ -10,12 +10,17 @@ router.get('/', function(req, res, next) {
   });
 });
 
+router.get('/ada', function(req, res, next) {
+  menuControlled.getImage();
+  res.status(200).json({status: "Gabut"});
+});
+
 router.get('/menu', function(req, res, next) {
   try {
     menuControlled.getMenu();
     res.status(200).json({menu: menuControlled.menu});
   } catch (error) {
-    res.status(404).json({status: error});
+    res.status(400).json({status: error});
   }
 });
 
@@ -25,34 +30,34 @@ router.get('/menu/:uid', function(req, res, next) {
       res.status(200).json({menu: await menuControlled.getSpecMenu(req.params['uid'])});
     })(null);
   } catch (error) {
-    res.status(404).json({status: error});
+    res.status(400).json({status: error});
   }
 });
 
 router.post('/addmenu', function(req, res, next) {
   try {
-    menuControlled.insertMenu(req.body);
-    res.status(200).json({status: "Berhasil"});
+    menuControlled.insertMenu(req);
+    res.status(201).json({status: "Berhasil"});
   } catch (error) {
-    res.status(404).json({status: error});
+    res.status(400).json({status: error});
   }
 });
 
 router.put('/updatemenu/:uid', function(req, res, next) {
   try {
     menuControlled.updateMenu(req.params['uid'], req.body);
-    res.status(200).json({status: "Berhasil"});
+    res.status(201).json({status: "Berhasil"});
   } catch (error) {
-    res.status(404).json({status: error});
+    res.status(400).json({status: error});
   }
 });
 
 router.delete('/deletemenu/:uid', function(req, res, next) {
   try {
     menuControlled.deleteMenu(req.params['uid']);
-    res.status(200).json({status: "Berhasil"});
+    res.status(201).json({status: "Berhasil"});
   } catch (error) {
-    res.status(404).json({status: error});
+    res.status(400).json({status: error});
   }
 });
 

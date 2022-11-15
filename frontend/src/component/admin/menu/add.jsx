@@ -9,22 +9,36 @@ class Add extends React.Component {
       nama: '',
       jenis: 'food',
       harga: '',
+      foto: null,
     }
   }
 
-  async uploadMenu() {
-    if (this.state.nama === '' && this.state.harga === '' && this.state.foto === null) {
+  async uploadMenu(e) {
+    e.preventDefault();
+
+    if (this.state.nama === '' || this.state.jenis === '' || this.state.harga === '' || this.state.foto === null) {
+      alert("Form Kurang Lengkap");
       return;
     }
 
+    const formdata = new FormData();
+    formdata.append("nama", this.state.nama);
+    formdata.append("jenis", this.state.jenis);
+    formdata.append("harga", this.state.harga);
+    formdata.append("foto", this.state.foto);
+
     try {
-      await axios.post('http://localhost:8000/addmenu', this.state).then(
+      await axios.post('http://localhost:8000/addmenu', formdata, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }).then(
         (res) => {
-          console.log(res.data.status);
+          window.location.assign('/admin/menu');
         }
       )
     } catch (error) {
-      console.log(error);
+      alert(error.response.data.status);
     }
   }
 
@@ -66,7 +80,7 @@ class Add extends React.Component {
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <h6 className="mb-3">Harga</h6>
               <Form.Control
-                type="text"
+                type="number"
                 style={{ backgroundColor: "#D9D9D9" }}
                 placeholder="Masukkan Harga Menu"
                 value={this.state.harga}
@@ -80,12 +94,12 @@ class Add extends React.Component {
         <Row className="mb-3">
           <Col>
             {/* <Button variant="primary">Pilih Gambar</Button> */}
-            <input type="file"/>
+            <input type="file" onChange={(e) => this.setState({foto: e.target.files[0]})}/>
           </Col>
           <Col></Col>
         </Row>
 
-        <Button variant="danger" onClick={() => {this.uploadMenu();window.location.assign('/admin/menu')}}>Tambah Menu</Button>
+        <Button variant="danger" onClick={(e) => {this.uploadMenu(e);}}>Tambah Menu</Button>
       </div>
     );
   };

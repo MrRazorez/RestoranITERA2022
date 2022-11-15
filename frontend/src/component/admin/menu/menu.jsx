@@ -127,7 +127,7 @@ class MenuAdmin extends React.Component {
                                     <td>{i+1}</td>
                                     <td>{e}</td>
                                     <td>
-                                        <img src="https://asset-a.grid.id//crop/0x0:0x0/700x465/photo/2021/07/13/gambar-ilustrasi-bisa-memperjela-20210713123218.jpg"
+                                        <img src={this.state.dataMenu[e].foto}
                                             width={100} alt="" />
                                     </td>
                                     <td>{this.state.dataMenu[e].nama}</td>

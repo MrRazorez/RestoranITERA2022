@@ -78,7 +78,7 @@ class Home extends React.Component {
                                     <Card className="shadow-sm">
                                         <Card.Img
                                             variant="top"
-                                            src="https://asset-a.grid.id//crop/0x0:0x0/700x465/photo/2021/07/13/gambar-ilustrasi-bisa-memperjela-20210713123218.jpg"
+                                            src={this.state.dataMenu[e].foto}
                                         />
                                         <Card.Body className="text-center">
                                             <Card.Title>{this.state.dataMenu[e].nama}</Card.Title>
