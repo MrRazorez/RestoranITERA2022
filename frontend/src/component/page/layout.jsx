@@ -1,14 +1,16 @@
-import React from "react";
+import React, { Component } from "react";
 import { Outlet } from "react-router-dom";
 import NavbarScreen from "./navbar";
 
-function Layout() {
-  return (
-    <div>
-      <NavbarScreen />
-      <Outlet />
-    </div>
-  );
+export class Layout extends Component {
+  render() {
+    return (
+      <div>
+        <NavbarScreen />
+        <Outlet />
+      </div>
+    );
+  }
 }
 
 export default Layout;
