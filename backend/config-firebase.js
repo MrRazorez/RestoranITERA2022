@@ -1,14 +1,17 @@
+const env = require('dotenv');
 const firebase = require('firebase/app');
 
+env.config({path: "./.env"});
+
 const firebaseConfig = {
-    apiKey: "AIzaSyCAu3Ev3OrtlSijlPZaLsikjpH-yjoXFhE",
-    authDomain: "restoranitera2022.firebaseapp.com",
-    databaseURL: "https://restoranitera2022-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "restoranitera2022",
-    storageBucket: "restoranitera2022.appspot.com",
-    messagingSenderId: "75846675681",
-    appId: "1:75846675681:web:da315bb33f52a43e019ba0",
-    measurementId: "G-64GPTL9GKC"
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.FIREBASE_DATABASE_URL,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID,
+    measurementId: process.env.FIREBASE_MEASUREMENT_ID
   };
 
 const config = firebase.initializeApp(firebaseConfig);
