@@ -41,15 +41,14 @@ class MenuAdmin extends React.Component {
         navigate("/admin/edit/"+uid);
     }
 
-    detail() {
+    detail(uid) {
         const { navigate } = this.props;
-        navigate("/admin/detail");
+        navigate("/admin/detail/"+uid);
     }
 
-    async hapus(uid) {
+    async hapus(uid, fileName) {
         try {
-            console.log(uid);
-            await axios.delete('http://localhost:8000/deletemenu/'+uid).then(
+            await axios.delete('http://localhost:8000/menu/'+uid+'/'+fileName).then(
                 () => {
                     this.callAPI();
                 }
@@ -127,7 +126,7 @@ class MenuAdmin extends React.Component {
                                     <td>{i+1}</td>
                                     <td>{e}</td>
                                     <td>
-                                        <img src={this.state.dataMenu[e].foto}
+                                        <img src={this.state.dataMenu[e].ref}
                                             width={100} alt="" />
                                     </td>
                                     <td>{this.state.dataMenu[e].nama}</td>
@@ -141,12 +140,12 @@ class MenuAdmin extends React.Component {
                                             >
                                             <BsPencilFill />
                                             </Button>
-                                            <Button variant="danger" className="me-2" onClick={() => {this.hapus(this.state.menu[i]);window.location.reload()}}>
+                                            <Button variant="danger" className="me-2" onClick={() => {this.hapus(this.state.menu[i], this.state.dataMenu[e].foto);window.location.reload()}}>
                                             <BsFillTrashFill />
                                             </Button>
                                             <Button
                                             variant="dark"
-                                            onClick={() => this.detail()}
+                                            onClick={() => this.detail(this.state.menu[i])}
                                             >
                                             Detail
                                             </Button>

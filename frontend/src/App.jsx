@@ -52,7 +52,7 @@ function App() {
             <Route path="menu" element={<MenuAdmin />}></Route>
             <Route path="tambah" element={<Add />} />
             <Route path="edit/:uid" element={<Edit />} />
-            <Route path="detail" element={<Detail />} />
+            <Route path="detail/:uid" element={<Detail />} />
             <Route path="laporan" element={<LaporanAdmin />} />
           </Route>
 

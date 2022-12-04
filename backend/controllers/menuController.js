@@ -52,26 +52,65 @@ class menuController {
             nama: req.body.nama,
             jenis: req.body.jenis,
             harga: Number(req.body.harga),
-            foto: fotoRef
+            foto: fileName,
+            ref: fotoRef
         });
 
         this.getMenu();
     }
 
-    updateMenu(uid, data) {
+    async updateMenu(req) {
+        var fotoName = '';
+        var fotoRef = '';
+
+        if (req.files) {
+            var file = req.files.updatefoto;
+            var allowedType = ['.png','.jpg','.jpeg'];
+            var ext = path.extname(file.name);
+            var fileName = file.md5 + ext;
+
+            if(!allowedType.includes(ext.toLowerCase())) {
+                console.log("Invalid Images");
+                return;
+            };
+
+            if(file.size > 5000000) {
+                console.log("Image must be less than 5 MB");
+                return;
+            };
+
+            fireStorage.deleteObject(fireStorage.ref(storage, 'foto/'+req.body.foto));
+            
+            await fireStorage.uploadBytes(fireStorage.ref(storage, 'foto/'+fileName), file.data);
+            
+            await fireStorage.getDownloadURL(fireStorage.ref(storage, 'foto/'+fileName)).then(
+                (url) => {
+                    fotoRef = String(url);
+                }
+            );
+
+            fotoName = fileName;
+        } else {
+            fotoRef = req.body.ref;
+            fotoName = req.body.foto;
+        }
+
         var updates = {};
-        updates[uid] = {
-            nama: data.nama,
-            jenis: data.jenis,
-            harga: Number(data.harga)
+        updates[req.params['uid']] = {
+            nama: req.body.nama,
+            jenis: req.body.jenis,
+            harga: Number(req.body.harga),
+            foto: fotoName,
+            ref: fotoRef
         };
         fireDB.update(fireDB.ref(db, 'menu'), updates);
 
         this.getMenu();
     }
 
-    deleteMenu(uid) {
+    deleteMenu(uid, fileName) {
         fireDB.set(fireDB.ref(db, 'menu/'+uid), null);
+        fireStorage.deleteObject(fireStorage.ref(storage, 'foto/'+fileName));
         this.getMenu();
     }
 }

@@ -10,11 +10,6 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/ada', function(req, res, next) {
-  menuControlled.getImage();
-  res.status(200).json({status: "Gabut"});
-});
-
 router.get('/menu', function(req, res, next) {
   try {
     menuControlled.getMenu();
@@ -34,7 +29,7 @@ router.get('/menu/:uid', function(req, res, next) {
   }
 });
 
-router.post('/addmenu', function(req, res, next) {
+router.post('/menu', function(req, res, next) {
   try {
     menuControlled.insertMenu(req);
     res.status(201).json({status: "Berhasil"});
@@ -43,18 +38,18 @@ router.post('/addmenu', function(req, res, next) {
   }
 });
 
-router.put('/updatemenu/:uid', function(req, res, next) {
+router.put('/menu/:uid', function(req, res, next) {
   try {
-    menuControlled.updateMenu(req.params['uid'], req.body);
+    menuControlled.updateMenu(req);
     res.status(201).json({status: "Berhasil"});
   } catch (error) {
     res.status(400).json({status: error});
   }
 });
 
-router.delete('/deletemenu/:uid', function(req, res, next) {
+router.delete('/menu/:uid/:foto', function(req, res, next) {
   try {
-    menuControlled.deleteMenu(req.params['uid']);
+    menuControlled.deleteMenu(req.params['uid'], req.params['foto']);
     res.status(201).json({status: "Berhasil"});
   } catch (error) {
     res.status(400).json({status: error});

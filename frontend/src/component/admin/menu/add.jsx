@@ -28,7 +28,7 @@ class Add extends React.Component {
     formdata.append("foto", this.state.foto);
 
     try {
-      await axios.post('http://localhost:8000/addmenu', formdata, {
+      await axios.post('http://localhost:8000/menu', formdata, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

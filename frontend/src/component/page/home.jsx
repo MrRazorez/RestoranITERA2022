@@ -81,7 +81,9 @@ class Home extends React.Component {
                       <Card className="shadow-sm">
                         <Card.Img
                           variant="top"
-                          src={this.state.dataMenu[e].foto}
+                          src={this.state.dataMenu[e].ref}
+                          width={150}
+                          height={150}
                         />
                         <Card.Body className="text-center">
                           <Card.Title>{this.state.dataMenu[e].nama}</Card.Title>

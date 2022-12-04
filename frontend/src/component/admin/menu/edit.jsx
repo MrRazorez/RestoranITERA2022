@@ -14,17 +14,35 @@ class Edit extends React.Component {
       nama: '',
       jenis: 'food',
       harga: '',
+      foto: '',
+      fotoref: '',
+      updateFoto: null,
     }
     this.uid = '';
   }
 
-  async uploadMenu() {
-    if (this.state.nama === '' && this.state.harga === '' && this.state.foto === null) {
+  async uploadMenu(e) {
+    e.preventDefault();
+
+    if (this.state.nama === '' || this.state.jenis === '' || this.state.harga === '') {
+      alert("Form Kurang Lengkap");
       return;
     }
 
+    const formdata = new FormData();
+    formdata.append("nama", this.state.nama);
+    formdata.append("jenis", this.state.jenis);
+    formdata.append("harga", this.state.harga);
+    formdata.append("foto", this.state.foto);
+    formdata.append("ref", this.state.fotoref);
+    formdata.append("updatefoto", this.state.updateFoto);
+
     try {
-      await axios.put('http://localhost:8000/updatemenu/'+this.uid, this.state).then(
+      await axios.put('http://localhost:8000/menu/'+this.uid, formdata, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }).then(
         (res) => {
           console.log(res.data.status);
         }
@@ -41,6 +59,8 @@ class Edit extends React.Component {
                 this.setState({nama: res.data.menu.nama});
                 this.setState({jenis: res.data.menu.jenis});
                 this.setState({harga: res.data.menu.harga});
+                this.setState({foto: res.data.menu.foto});
+                this.setState({fotoref: res.data.menu.ref});
             }
         );
     } catch (error) {
@@ -111,12 +131,12 @@ class Edit extends React.Component {
         <Row className="mb-3">
           <Col>
             {/* <Button variant="primary">Pilih Gambar</Button> */}
-            <input type="file"/>
+            <input type="file" onChange={(e) => this.setState({updateFoto: e.target.files[0]})}/>
           </Col>
           <Col></Col>
         </Row>
 
-        <Button variant="danger" onClick={() => {this.uploadMenu();window.location.assign('/admin/menu')}}>Tambah Menu</Button>
+        <Button variant="danger" onClick={(e) => {this.uploadMenu(e);window.location.assign('/admin/menu')}}>Tambah Menu</Button>
       </div>
     );
   };
