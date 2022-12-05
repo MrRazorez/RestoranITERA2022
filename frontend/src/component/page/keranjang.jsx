@@ -4,14 +4,41 @@ import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { BsFillTrashFill } from "react-icons/bs";
 import { connect } from "react-redux";
 import { uangRupiah } from "./currency";
+import axios from "axios";
 
 class Keranjang extends React.Component {
   constructor() {
     super();
     this.state = {
+      dataMenu: {},
+      dataCart: [],
       total: 0,
       customer: "",
     };
+  }
+
+  async callAPI() {
+    try {
+      await axios.get("http://localhost:8000/menu").then((res) => {
+        this.setState({ dataMenu: res.data.menu });
+        this.setState({ dataCart: this.props.cart.value });
+      });
+      
+      var totalAmount = 0;
+
+      for (let i = 0; i < this.state.dataCart.length; i++) {
+        totalAmount += this.state.dataMenu[this.state.dataCart[i].uid].harga * this.state.dataCart[i].total;
+      }
+
+      this.setState({total: totalAmount});
+    } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        alert("Terjadi kesalahan server. Silahkan refresh kembali!");
+      } else if (error.code === "ERR_BAD_REQUEST") {
+        alert(error.response.data.status);
+        document.location.reload();
+      }
+    }
   }
 
   async notification(status) {
@@ -43,7 +70,7 @@ class Keranjang extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.props.cart);
+    this.callAPI();
   }
 
   render() {
@@ -62,38 +89,38 @@ class Keranjang extends React.Component {
                 aria-describedby="basic-addon1"
                 style={{ backgroundColor: "#E9E9E9" }}
                 value={this.state.customer}
-                onChange={(data) => this.state.setCustomer(data.target.value)}
+                onChange={(data) => this.setState({customer: data.target.value})}
               />
             </InputGroup>
           </Row>
 
           {/* Detail */}
-          {this.state.currCart != null ? (
-            this.state.currCart.data.map((e, i) => {
+          {this.state.dataCart != null && this.state.dataMenu != null ? (
+            this.state.dataCart.map((e, i) => {
               return (
                 <Row className="border border-1 shadow-sm mx-3 p-3 mb-3" key={i}>
                   <Col className="p-2 d-flex justify-content-center">
                     <img
-                      src="https://asset-a.grid.id//crop/0x0:0x0/700x465/photo/2021/07/13/gambar-ilustrasi-bisa-memperjela-20210713123218.jpg"
+                      src={this.state.dataMenu[e.uid].ref}
                       alt=""
                       width={150}
                     />
                   </Col>
                   <Col className="p-2 d-flex flex-column align-items-center justify-content-center">
-                    <h5>{e.nama}</h5>
-                    <h6>{uangRupiah(e.harga)} /porsi</h6>
+                    <h5>{this.state.dataMenu[e.uid].nama}</h5>
+                    <h6>{uangRupiah(this.state.dataMenu[e.uid].harga)} /porsi</h6>
                   </Col>
                   <Col className="p-2 d-flex align-items-center justify-content-center">
                     <Button variant="outline-primary">
                       <AiOutlineMinus style={{ fontSize: 22 }} />
                     </Button>
-                    <h5 className="mx-4">1</h5>
+                    <h5 className="mx-4">{e.total}</h5>
                     <Button variant="outline-primary">
                       <AiOutlinePlus style={{ fontSize: 22 }} />
                     </Button>
                   </Col>
                   <Col className="p-2 d-flex align-items-center justify-content-center">
-                    <h5>{uangRupiah(e.harga)}</h5>
+                    <h5>{uangRupiah(this.state.dataMenu[e.uid].harga * e.total)}</h5>
                   </Col>
                   <Col className="p-2 d-flex justify-content-center align-items-center">
                     <Button variant="outline-danger">
@@ -127,7 +154,10 @@ class Keranjang extends React.Component {
               <h5>{uangRupiah(this.state.total)}</h5>
             </Col>
             <Col className="d-flex justify-content-center align-items-center">
-              <Button onClick={() => console.log("TEST")}>Pesan Sekarang</Button>
+              <Button onClick={() => {
+                localStorage.clear();
+                this.notification("Pesanan berhasil terkirim!!!");
+              }}>Pesan Sekarang</Button>
             </Col>
           </Row>
         </Row>
