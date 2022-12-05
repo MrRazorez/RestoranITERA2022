@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
 import { Col, Container, Form, Row, Button, Card, Modal, } from "react-bootstrap";
+import store from "../../app/store";
+import { addCart } from "../../features/keranjang/cartSlice"; 
 import { uangRupiah } from "./currency";
 
 class Home extends React.Component {
@@ -10,6 +12,7 @@ class Home extends React.Component {
       menu: [],
       dataMenu: {},
       show: false,
+      popupUid: null,
       popupNama: null,
       popupKategori: null,
       popupHarga: null,
@@ -32,6 +35,10 @@ class Home extends React.Component {
         document.location.reload();
       }
     }
+  }
+
+  handleAddCart() {
+    store.dispatch(addCart(this.state.popupUid));
   }
 
   componentDidMount() {
@@ -93,6 +100,7 @@ class Home extends React.Component {
                       className="btn"
                       onClick={() => {
                         this.setState({
+                          popupUid: e,
                           popupNama: this.state.dataMenu[e].nama,
                           popupKategori: this.state.dataMenu[e].jenis,
                           popupHarga: this.state.dataMenu[e].harga,
@@ -137,7 +145,15 @@ class Home extends React.Component {
             <Modal.Body> Kategori  : {String(this.state.popupKategori).toUpperCase()} </Modal.Body>
             <Modal.Body> Harga     : {uangRupiah(this.state.popupHarga)} </Modal.Body>
             <Modal.Footer>
-              <Button variant="btn btn-primary">Tambah</Button>
+              <Button
+                variant="btn btn-primary"
+                onClick={
+                  () => {
+                    this.handleAddCart();
+                    this.setState({ show: false });
+                  }
+                }
+              >Tambah</Button>
               <Button
                 variant="secondary"
                 onClick={() => {
