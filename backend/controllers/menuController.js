@@ -5,37 +5,38 @@ var db = fireDB.getDatabase(config);
 var storage = fireStorage.getStorage(config);
 var path = require('path');
 
-class menuController {
-    constructor() {
-        this.menu = [];
-        this.getMenu();
+async function getMenu(req, res, next) {
+    try {
+        var dbGet = await fireDB.get(fireDB.child(fireDB.ref(db), "menu"));
+        res.status(200).json({menu: dbGet.val()});
+    } catch (error) {
+        res.status(400).json({status: error});
     }
+}
 
-    async getMenu() {
-       var dbGet = await fireDB.get(fireDB.child(fireDB.ref(db), "menu"));
-
-       this.menu = dbGet.val();
+async function getSpecMenu(req, res, next) {
+    try {
+        var dbGet = await fireDB.get(fireDB.child(fireDB.ref(db, 'menu'), req.params['uid']));
+        res.status(200).json({menu: dbGet.val()});
+    } catch (error) {
+        res.status(400).json({status: error});
     }
+}
 
-    async getSpecMenu(uid) {
-        var dbGet = await fireDB.get(fireDB.child(fireDB.ref(db, 'menu'), uid));
-
-        return dbGet.val();
-    }
-
-    async insertMenu(req) {
+async function insertMenu(req, res, next) {
+    try {
         var file = req.files.foto;
         var allowedType = ['.png','.jpg','.jpeg'];
         var ext = path.extname(file.name);
         var fileName = file.md5 + ext;
 
         if(!allowedType.includes(ext.toLowerCase())) {
-            console.log("Invalid Images");
+            res.status(415).json({status: "Invalid Images"});
             return;
         };
 
         if(file.size > 5000000) {
-            console.log("Image must be less than 5 MB");
+            res.status(416).json({status: "Image must be less than 5 MB"});
             return;
         };
 
@@ -56,10 +57,14 @@ class menuController {
             ref: fotoRef
         });
 
-        this.getMenu();
+        res.status(201).json({status: "Berhasil"});
+    } catch (error) {
+        res.status(400).json({status: error});
     }
+}
 
-    async updateMenu(req) {
+async function updateMenu(req, res, next) {
+    try {
         var fotoName = '';
         var fotoRef = '';
 
@@ -70,12 +75,12 @@ class menuController {
             var fileName = file.md5 + ext;
 
             if(!allowedType.includes(ext.toLowerCase())) {
-                console.log("Invalid Images");
+                res.status(415).json({status: "Invalid Images"});
                 return;
             };
 
             if(file.size > 5000000) {
-                console.log("Image must be less than 5 MB");
+                res.status(416).json({status: "Image must be less than 5 MB"});
                 return;
             };
 
@@ -105,14 +110,26 @@ class menuController {
         };
         fireDB.update(fireDB.ref(db, 'menu'), updates);
 
-        this.getMenu();
-    }
-
-    deleteMenu(uid, fileName) {
-        fireDB.set(fireDB.ref(db, 'menu/'+uid), null);
-        fireStorage.deleteObject(fireStorage.ref(storage, 'foto/'+fileName));
-        this.getMenu();
+        res.status(201).json({status: "Berhasil"});
+    } catch (error) {
+        res.status(400).json({status: error});
     }
 }
 
-module.exports = menuController;
+async function deleteMenu(req, res, next) {
+    try {
+        fireDB.set(fireDB.ref(db, 'menu/'+req.params['uid']), null);
+        fireStorage.deleteObject(fireStorage.ref(storage, 'foto/'+req.params['foto']));
+        res.status(202).json({status: "Berhasil"});
+    } catch (error) {
+        res.status(400).json({status: error});
+    }
+}
+
+module.exports = {
+    getMenu,
+    getSpecMenu,
+    insertMenu,
+    updateMenu,
+    deleteMenu
+}
