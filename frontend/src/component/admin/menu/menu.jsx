@@ -27,7 +27,9 @@ class MenuAdmin extends React.Component {
         super();
         this.state = {
             menu: [],
-            dataMenu: {}
+            dataMenu: {},
+            searchCategory: '',
+            searchName: ''
         }
     }
 
@@ -103,6 +105,9 @@ class MenuAdmin extends React.Component {
                             placeholder="Search"
                             className="me-2"
                             aria-label="Search"
+                            onChange={(e) => {
+                                this.setState({searchName: e.target.value});
+                            }}
                         />
                         <Button variant="outline-primary">Search</Button>
                     </Form>
@@ -120,7 +125,16 @@ class MenuAdmin extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.menu !== null? this.state.menu.map((e, i) => {
+                        {this.state.menu !== null? this.state.menu.filter(
+                            // eslint-disable-next-line
+                            (val) => {
+                            if (this.state.searchName === "") {
+                                return val;
+                            } else if (this.state.dataMenu[val].nama.toLowerCase().includes(this.state.searchName.toLowerCase())) {
+                                return val;
+                            }
+                            }
+                        ).map((e, i) => {
                             return (
                                 <tr key={i}>
                                     <td>{i+1}</td>

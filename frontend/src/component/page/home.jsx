@@ -11,7 +11,10 @@ class Home extends React.Component {
       dataMenu: {},
       show: false,
       popupNama: null,
+      popupKategori: null,
       popupHarga: null,
+      searchCategory: '',
+      searchName: ''
     };
   }
 
@@ -41,11 +44,17 @@ class Home extends React.Component {
         <Container className="my-5">
           <Row className="flex-column-reverse flex-md-row mb-4 mx-2">
             <Col md={4} className="p-2">
-              <Form.Select className="border-primary" style={{ width: "35%" }}>
-                <option>All </option>
-                <option>Food</option>
-                <option>Drink</option>
-                <option>Dessert</option>
+              <Form.Select
+                className="border-primary"
+                style={{ width: "35%" }}
+                onChange={(data) => {
+                  this.setState({searchCategory: data.target.value});
+                }}
+              >
+                <option value="">All </option>
+                <option value="food">Food</option>
+                <option value="drink">Drink</option>
+                <option value="dessert">Dessert</option>
               </Form.Select>
             </Col>
             <Col md={{ span: 5, offset: 3 }} className="p-2">
@@ -55,6 +64,9 @@ class Home extends React.Component {
                   placeholder="Search"
                   className="me-2"
                   aria-label="Search"
+                  onChange={(e) => {
+                    this.setState({searchName: e.target.value});
+                  }}
                 />
                 <Button variant="btn btn-primary">Search</Button>
               </Form>
@@ -63,7 +75,18 @@ class Home extends React.Component {
 
           <Row>
             {this.state.dataMenu !== null ? (
-              this.state.menu.map((e, i) => {
+              this.state.menu.filter(
+                // eslint-disable-next-line
+                (val) => {
+                  if (this.state.searchName === "" && this.state.searchCategory === "") {
+                    return val;
+                  } else if (this.state.dataMenu[val].nama.toLowerCase().includes(this.state.searchName.toLowerCase())) {
+                    if (this.state.dataMenu[val].jenis.toLowerCase().includes(this.state.searchCategory.toLowerCase())) {
+                      return val;
+                    }
+                  }
+                }
+              ).map((e, i) => {
                 return (
                   <Col className="my-1 col-6" xl={3} md={4} sm={6} key={i}>
                     <div
@@ -71,11 +94,10 @@ class Home extends React.Component {
                       onClick={() => {
                         this.setState({
                           popupNama: this.state.dataMenu[e].nama,
-                        });
-                        this.setState({
+                          popupKategori: this.state.dataMenu[e].jenis,
                           popupHarga: this.state.dataMenu[e].harga,
+                          show: true
                         });
-                        this.setState({ show: true });
                       }}
                     >
                       <Card className="shadow-sm">
@@ -111,9 +133,11 @@ class Home extends React.Component {
             <Modal.Header closeButton>
               <Modal.Title>Modal Heading</Modal.Title>
             </Modal.Header>
-            <Modal.Body> {this.state.popupNama} </Modal.Body>
-            <Modal.Body> {uangRupiah(this.state.popupHarga)} </Modal.Body>
+            <Modal.Body> Nama Menu : {this.state.popupNama} </Modal.Body>
+            <Modal.Body> Kategori  : {String(this.state.popupKategori).toUpperCase()} </Modal.Body>
+            <Modal.Body> Harga     : {uangRupiah(this.state.popupHarga)} </Modal.Body>
             <Modal.Footer>
+              <Button variant="btn btn-primary">Tambah</Button>
               <Button
                 variant="secondary"
                 onClick={() => {
