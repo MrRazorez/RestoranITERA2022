@@ -136,7 +136,7 @@ class Edit extends React.Component {
           <Col></Col>
         </Row>
 
-        <Button variant="danger" onClick={(e) => {this.uploadMenu(e);window.location.assign('/admin/menu')}}>Tambah Menu</Button>
+        <Button variant="danger" onClick={(e) => {this.uploadMenu(e);window.location.assign('/admin/menu')}}>Ubah Menu</Button>
       </div>
     );
   };
