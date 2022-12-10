@@ -31,7 +31,7 @@ export class Fasilitas extends Component {
       <Container className="mt-5">
         <Row className="mb-5">
           <Col className="d-flex justify-content-center p-3">
-            <img src={resto} />
+            <img src={resto} alt=""/>
           </Col>
           <Col className="p-3 px-4">
             <h3>Syran Resto</h3>
