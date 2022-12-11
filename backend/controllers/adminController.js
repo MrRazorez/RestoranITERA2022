@@ -5,6 +5,9 @@ var db = fireDB.getDatabase(config);
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 
+const env = require('dotenv');
+env.config({path: "../.env"});
+
 async function Login(req, res, next) {
     const { email, password } = req.body;
 
@@ -28,7 +31,7 @@ async function Login(req, res, next) {
         var userName = user.name;
         var userEmail = user.email;
 
-        const token = jwt.sign({userId, userName, userEmail}, "fbe0e8cc3c0334c186f871402686b2ee");
+        const token = jwt.sign({userId, userName, userEmail}, process.env.TOKEN_SECRET);
 
         var updates = {};
         updates["jwt"] = { token };
@@ -56,7 +59,7 @@ async function Tokens(req, res, next) {
             res.sendStatus(403);
             return;
         }
-        jwt.verify(token, "fbe0e8cc3c0334c186f871402686b2ee", (error) => {
+        jwt.verify(token, process.env.TOKEN_SECRET, (error) => {
             if (error) {
                 res.sendStatus(403);
                 return;
