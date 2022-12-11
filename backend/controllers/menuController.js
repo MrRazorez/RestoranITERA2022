@@ -118,8 +118,8 @@ async function updateMenu(req, res, next) {
 
 async function deleteMenu(req, res, next) {
     try {
-        fireDB.set(fireDB.ref(db, 'menu/'+req.params['uid']), null);
-        fireStorage.deleteObject(fireStorage.ref(storage, 'foto/'+req.params['foto']));
+        await fireDB.set(fireDB.ref(db, 'menu/'+req.params['uid']), null);
+        await fireStorage.deleteObject(fireStorage.ref(storage, 'foto/'+req.params['foto']));
         res.status(202).json({status: "Berhasil"});
     } catch (error) {
         res.status(400).json({status: error});

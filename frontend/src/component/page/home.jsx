@@ -9,6 +9,7 @@ class Home extends React.Component {
   constructor() {
     super();
     this.state = {
+      loading: true,
       menu: [],
       dataMenu: {},
       show: false,
@@ -26,6 +27,7 @@ class Home extends React.Component {
       await axios.get("http://localhost:8000/menu").then((res) => {
         this.setState({ dataMenu: res.data.menu });
         this.setState({ menu: Object.keys(res.data.menu) });
+        this.setState({ loading: false });
       });
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
@@ -47,6 +49,8 @@ class Home extends React.Component {
 
   render() {
     return (
+      <>
+      { this.state.loading? <h1 id="content" className="text-center p-5 pt-5">LOADING</h1> :
       <>
         <Container className="my-5">
           <Row className="flex-column-reverse flex-md-row mb-4 mx-2">
@@ -165,6 +169,8 @@ class Home extends React.Component {
             </Modal.Footer>
           </Modal>
         </Container>
+      </>
+      }
       </>
     );
   }
