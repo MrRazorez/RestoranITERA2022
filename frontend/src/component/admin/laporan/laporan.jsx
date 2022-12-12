@@ -13,6 +13,10 @@ export class LaporanAdmin extends Component {
     },
   ];
 
+  print() {
+    window.print();
+  }
+
   render() {
     return (
       <div>
@@ -23,7 +27,8 @@ export class LaporanAdmin extends Component {
           <div className="d-flex justify-content-end ">
             <Button
               variant="danger"
-              className=" d-flex align-items-center py-2 px-3 "
+              className=" d-flex align-items-center py-2 px-3"
+              onClick={this.print}
             >
               <AiFillFileText className="fs-4 me-2" />
               Cetak

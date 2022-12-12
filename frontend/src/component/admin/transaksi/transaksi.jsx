@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import BreadcrumbComponent from "../menu/breadcrumb";
 
 export class TransaksiAdmin extends Component {
   static propTypes = {};
@@ -7,7 +8,7 @@ export class TransaksiAdmin extends Component {
   render() {
     return (
       <div>
-        <h4 className="fw-bold">Transaksi</h4>
+        <BreadcrumbComponent />
         <h6 className="mb-5">Halaman tentang pesanan yang telah masuk</h6>
         {Array.from({ length: 6 }).map((_, index) => (
           <a
