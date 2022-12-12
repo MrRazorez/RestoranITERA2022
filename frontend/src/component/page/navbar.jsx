@@ -6,14 +6,14 @@ import { useLocation } from "react-router-dom";
 function NavbarScreen() {
   const pathname = useLocation().pathname;
   return (
-    <Navbar className="px-lg-5" bg="dark" variant="dark" expand="lg">
+    <Navbar className="px-3 px-lg-5" bg="dark" variant="dark" expand="lg">
       <Container fluid>
         <Navbar.Brand href="#" className="fs-4 fw-bold">
           Syran <span className="text-info">Resto.</span>
         </Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse>
-          <Nav className="ms-auto">
+          <Nav className="ms-auto me-3">
             <Nav.Link
               className={`${pathname === "/" ? "active" : ""} ms-auto`}
               href="/"

@@ -28,12 +28,12 @@ export class Fasilitas extends Component {
 
   render() {
     return (
-      <Container className="mt-5">
+      <Container className="my-5">
         <Row className="mb-5">
-          <Col className="d-flex justify-content-center p-3">
-            <img src={resto} alt=""/>
+          <Col className="col-12 col-md-6 col-lg-4 offset-lg-1 p-0 mb-2 p-lg-3">
+            <img src={resto} width="100%" />
           </Col>
-          <Col className="p-3 px-4">
+          <Col className="col-12 col-md-6 p-3 px-4">
             <h3>Syran Resto</h3>
             <hr />
             <div style={{ textAlign: "justify" }}>
@@ -45,7 +45,7 @@ export class Fasilitas extends Component {
             </div>
           </Col>
         </Row>
-        <Row className="justify-content-center align-items-center">
+        <Row className="justify-content-center align-items-center p-0">
           <hr className="w-25 d-none d-sm-flex mt-2" />
           <h4 className="w-auto px-4 d-flex justify-content-center text-center">
             Fasilitas Randu Resto

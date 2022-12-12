@@ -2,38 +2,39 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Row, Col, Form, Button } from "react-bootstrap";
+import BreadcrumbComponent from "./breadcrumb";
 
 function withParams(Component) {
-  return props => <Component {...props} params={useParams()} />;
+  return (props) => <Component {...props} params={useParams()} />;
 }
 
 class Detail extends React.Component {
   constructor() {
     super();
     this.state = {
-      nama: '',
-      jenis: 'food',
-      harga: '',
-    }
-    this.uid = '';
+      nama: "",
+      jenis: "food",
+      harga: "",
+      fotoref: null,
+    };
+    this.uid = "";
   }
 
   async callAPI() {
     try {
-        await axios.get('http://localhost:8000/menu/'+this.uid).then(
-            (res) => {
-                this.setState({nama: res.data.menu.nama});
-                this.setState({jenis: res.data.menu.jenis});
-                this.setState({harga: res.data.menu.harga});
-            }
-        );
+      await axios.get("http://localhost:8000/menu/" + this.uid).then((res) => {
+        this.setState({ nama: res.data.menu.nama });
+        this.setState({ jenis: res.data.menu.jenis });
+        this.setState({ harga: res.data.menu.harga });
+        this.setState({ fotoref: res.data.menu.ref });
+      });
     } catch (error) {
-        if (error.code === "ERR_NETWORK") {
-            alert("Terjadi kesalahan server. Silahkan refresh kembali!");
-        } else if (error.code === "ERR_BAD_REQUEST") {
-            alert(error.response.data.status);
-            document.location.reload();
-        }
+      if (error.code === "ERR_NETWORK") {
+        alert("Terjadi kesalahan server. Silahkan refresh kembali!");
+      } else if (error.code === "ERR_BAD_REQUEST") {
+        alert(error.response.data.status);
+        document.location.reload();
+      }
     }
   }
 
@@ -45,10 +46,10 @@ class Detail extends React.Component {
 
   render() {
     return (
-      <div>
-        <h4 className="mb-5">Detail</h4>
-        <Row className="mb-3">
-          <Col className="pe-5">
+      <div className="p-0">
+        <BreadcrumbComponent />
+        <Row className="mb-3 mt-5">
+          <Col className="col-12 col-sm-6">
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <h6 className="mb-3">Nama Menu</h6>
               <Form.Control
@@ -60,7 +61,7 @@ class Detail extends React.Component {
               />
             </Form.Group>
           </Col>
-          <Col>
+          <Col className="col-12 col-sm-6">
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <h6 className="mb-3">Jenis Menu</h6>
               <Form.Select
@@ -77,7 +78,7 @@ class Detail extends React.Component {
           </Col>
         </Row>
         <Row className="mb-3">
-          <Col className="pe-5">
+          <Col className="col-12 col-sm-6">
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <h6 className="mb-3">Harga</h6>
               <Form.Control
@@ -91,11 +92,26 @@ class Detail extends React.Component {
           </Col>
           <Col></Col>
         </Row>
-  
-        <Button variant="danger" onClick={() => window.history.back()}>Kembali</Button>
+
+        {this.state.fotoref != null ? (
+          <p>
+            <img
+              src={this.state.fotoref}
+              style={{
+                width: "12rem",
+              }}
+            />
+          </p>
+        ) : (
+          <></>
+        )}
+
+        <Button variant="dark" onClick={() => window.history.back()}>
+          Kembali
+        </Button>
       </div>
     );
   }
-};
+}
 
 export default withParams(Detail);

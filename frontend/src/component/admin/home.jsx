@@ -58,7 +58,7 @@ export class HomeAdmin extends Component {
         <div>
           {this.feedback.map((e, i) => {
             return (
-              <Card className="mb-4">
+              <Card className="mb-4" key={i}>
                 <Card.Body>
                   <Card.Text> {e.desc} </Card.Text>
                   <footer className="d-flex justify-content-end">
