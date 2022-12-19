@@ -25,24 +25,24 @@ function AdminLayout() {
   });
 
   async function Tokens() {
-    if (window.sessionStorage.getItem("token")) {
+    if (window.localStorage.getItem("token")) {
       try {
         await axios
           .post("http://localhost:8000/users/token", {
-            token: window.sessionStorage.getItem("token"),
+            token: window.localStorage.getItem("token"),
           })
           .then((res) => {
             setLoading(false);
             if (res.status !== 202) {
               window.location.replace("/login");
             } else {
-              const data = jwt_decode(window.sessionStorage.getItem("token"));
+              const data = jwt_decode(window.localStorage.getItem("token"));
               setUserName(data.userName);
             }
           });
       } catch (error) {
         if (error.response) {
-          window.sessionStorage.removeItem("token");
+          window.localStorage.removeItem("token");
           window.location.replace("/login");
         }
       }
@@ -57,11 +57,11 @@ function AdminLayout() {
     try {
       await axios
         .post("http://localhost:8000/users/logout", {
-          token: window.sessionStorage.getItem("token"),
+          token: window.localStorage.getItem("token"),
         })
         .then((res) => {
           if (res.status === 202) {
-            window.sessionStorage.removeItem("token");
+            window.localStorage.removeItem("token");
             navigate("/login");
           }
         });

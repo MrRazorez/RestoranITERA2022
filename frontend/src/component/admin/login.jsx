@@ -35,7 +35,7 @@ export class Login extends Component {
           password: this.state.password,
         })
         .then((res) => {
-          window.sessionStorage.setItem("token", res.data.token);
+          window.localStorage.setItem("token", res.data.token);
           navigate("/admin");
         });
     } catch (error) {
@@ -48,7 +48,7 @@ export class Login extends Component {
   }
 
   componentDidMount() {
-    if (window.sessionStorage.getItem("token")) {
+    if (window.localStorage.getItem("token")) {
       window.location.replace("/admin");
     }
   }
