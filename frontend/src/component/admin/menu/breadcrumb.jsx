@@ -7,7 +7,7 @@ function BreadcrumbComponent() {
 
   return (
     <Breadcrumb>
-      {pathname[2] == "transaksi" || pathname[2] == "transaksi-detail" ? (
+      {pathname[2] === "transaksi" || pathname[2] === "transaksi-detail" ? (
         <Breadcrumb.Item
           href="/admin/transaksi"
           className={`${

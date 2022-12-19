@@ -30,7 +30,7 @@ export class Login extends Component {
     const { navigate } = this.props;
     try {
       await axios
-        .post("http://localhost:8000/users/login", {
+        .post(process.env.REACT_APP_BACKEND_URL+"/users/login", {
           email: this.state.email,
           password: this.state.password,
         })

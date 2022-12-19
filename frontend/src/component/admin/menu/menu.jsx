@@ -46,7 +46,7 @@ class MenuAdmin extends React.Component {
   async hapus(uid, fileName) {
     try {
       await axios
-        .delete("http://localhost:8000/menu/" + uid + "/" + fileName)
+        .delete(process.env.REACT_APP_BACKEND_URL+"/menu/" + uid + "/" + fileName)
         .then(() => {
           this.callAPI();
         });
@@ -57,7 +57,7 @@ class MenuAdmin extends React.Component {
 
   async callAPI() {
     try {
-      await axios.get("http://localhost:8000/menu").then((res) => {
+      await axios.get(process.env.REACT_APP_BACKEND_URL+"/menu").then((res) => {
         this.setState({ dataMenu: res.data.menu });
         this.setState({ menu: Object.keys(res.data.menu) });
       });

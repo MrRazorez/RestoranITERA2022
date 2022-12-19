@@ -19,7 +19,7 @@ class Keranjang extends React.Component {
 
   async callAPI() {
     try {
-      await axios.get("http://localhost:8000/menu").then((res) => {
+      await axios.get(process.env.REACT_APP_BACKEND_URL+"/menu").then((res) => {
         this.setState({ dataMenu: res.data.menu });
         this.setState({ dataCart: this.props.cart.value });
       });

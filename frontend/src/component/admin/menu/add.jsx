@@ -35,7 +35,7 @@ class Add extends React.Component {
 
     try {
       await axios
-        .post("http://localhost:8000/menu", formdata, {
+        .post(process.env.REACT_APP_BACKEND_URL+"/menu", formdata, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -114,6 +114,7 @@ class Add extends React.Component {
               style={{
                 width: "12rem",
               }}
+              alt=""
             />
           </p>
         ) : (
