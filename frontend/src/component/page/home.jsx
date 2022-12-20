@@ -203,7 +203,7 @@ class Home extends React.Component {
                   <div className="fs-5 text-primary">
                     {this.state.popupKategori}
                   </div>
-                  <div className="fs-5">Rp. {this.state.popupHarga}</div>
+                  <div className="fs-5">{uangRupiah(this.state.popupHarga)}</div>
                 </Modal.Body>
                 <Modal.Footer>
                   <Button

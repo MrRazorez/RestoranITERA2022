@@ -3,6 +3,8 @@ import { Container, Row, Form, InputGroup, Button, Col } from "react-bootstrap";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { BsFillTrashFill } from "react-icons/bs";
 import { connect } from "react-redux";
+import store from "../../app/store";
+import { incrementCart, decrementCart } from "../../features/keranjang/cartSlice";
 import { uangRupiah } from "./currency";
 import axios from "axios";
 
@@ -10,10 +12,12 @@ class Keranjang extends React.Component {
   constructor() {
     super();
     this.state = {
+      loading: false,
       dataMenu: {},
       dataCart: [],
       total: 0,
       customer: "",
+      table: ""
     };
   }
 
@@ -43,18 +47,47 @@ class Keranjang extends React.Component {
     }
   }
 
-  async notification(status) {
+  async sendOrder() {
+    try {
+      await axios.post(process.env.REACT_APP_BACKEND_URL+"/order", {
+        customer: this.state.customer,
+        table: this.state.table,
+        value: (localStorage.getItem("cart"))? JSON.parse(localStorage.getItem('cart')).value : {}
+      }).then((res) => {
+        localStorage.clear();
+        this.setState({
+          loading: true
+        });
+        this.notification(res);
+      });
+    } catch (error) {
+      if (error.response) {
+        this.notification(error.response);
+      }
+    }
+  }
+
+  async notification(response) {
+    const exitLobby = () => window.location.replace("/");
+
     const showNotification = () => {
       const notification = new Notification("Pesan dari Syran Resto", {
-        body: status,
+        body: response.data.msg,
       });
+
+      if (response.status === 201) {
+        setTimeout(() => {
+          notification.close();
+          exitLobby();
+        }, 3 * 1000);
+  
+        notification.onclick = exitLobby;
+        return;
+      }
 
       setTimeout(() => {
         notification.close();
-        window.location.replace("/");
-      }, 5 * 1000);
-
-      notification.onclick = () => window.location.replace("/");
+      }, 3 * 1000);
     };
 
     let granted = false;
@@ -75,8 +108,30 @@ class Keranjang extends React.Component {
     this.callAPI();
   }
 
+  componentDidUpdate() {
+    if (document.getElementById("update_total") !== null) {
+      document.getElementById("update_total").innerHTML = uangRupiah(this.state.total);
+    }
+  }
+
   render() {
     return (
+      <>
+      {this.state.loading ? (
+          <div className="d-flex flex-column align-items-center p-5 pt-5">
+            <div
+              className="spinner-border text-primary"
+              style={{ width: "3rem", height: "3rem" }}
+              role="status"
+            >
+              <span className="sr-only">Loading...</span>
+            </div>
+
+            <h2 id="content" className="text-center pt-4">
+              Loading...
+            </h2>
+          </div>
+        ) : (
       <Container className="mt-5">
         <h4 className="mb-3">Keranjang</h4>
 
@@ -115,11 +170,28 @@ class Keranjang extends React.Component {
                 </Col>
                 <Col className="p-2 d-flex align-items-center justify-content-center">
                   <Button variant="outline-primary">
-                    <AiOutlineMinus style={{ fontSize: 22 }} />
+                    <AiOutlineMinus style={{ fontSize: 22 }} onClick={() => {
+                      store.dispatch(decrementCart(e.uid));
+                      var amount = this.state.total;
+                      if (e.total > 1) {
+                        amount -= this.state.dataMenu[e.uid].harga;
+                      }
+                      this.setState({
+                        dataCart: JSON.parse(localStorage.getItem('cart')).value,
+                        total: amount
+                      });
+                    }}/>
                   </Button>
                   <h5 className="mx-4">{e.total}</h5>
                   <Button variant="outline-primary">
-                    <AiOutlinePlus style={{ fontSize: 22 }} />
+                    <AiOutlinePlus style={{ fontSize: 22 }} onClick={() => {
+                      store.dispatch(incrementCart(e.uid));
+                      var amount = this.state.total + this.state.dataMenu[e.uid].harga;
+                      this.setState({
+                        dataCart: JSON.parse(localStorage.getItem('cart')).value,
+                        total: amount
+                      });
+                    }}/>
                   </Button>
                 </Col>
                 <Col className="p-2 d-flex align-items-center justify-content-center">
@@ -144,7 +216,7 @@ class Keranjang extends React.Component {
           <Col className="col-12 col-md-9">
             <Row className="d-flex flex-column-reverse flex-md-row ">
               <Col className="col-6 col-md-3 px-2 py-1 d-flex justify-md-content-center ">
-                <Form.Select className="border-primary">
+                <Form.Select className="border-primary"  onChange={(data) => this.setState({ table: data.target.value })}>
                   <option>Pilih Meja</option>
                   {[...Array(10)].map((x, i) => (
                     <option value={x} key={i}>
@@ -159,7 +231,7 @@ class Keranjang extends React.Component {
                     <h5>Total</h5>
                   </Col>
                   <Col>
-                    <h5>{uangRupiah(this.state.total)}</h5>
+                    <h5 id="update_total">{uangRupiah(this.state.total)}</h5>
                   </Col>
                 </Row>
               </Col>
@@ -168,8 +240,7 @@ class Keranjang extends React.Component {
           <Col className="col-12 col-md-3 p-0 py-3 p-md-0 d-flex justify-content-center">
             <Button
               onClick={() => {
-                localStorage.clear();
-                this.notification("Pesanan berhasil terkirim!!!");
+                this.sendOrder();
               }}
             >
               Pesan Sekarang
@@ -177,6 +248,8 @@ class Keranjang extends React.Component {
           </Col>
         </Row>
       </Container>
+      )}
+      </>
     );
   }
 }

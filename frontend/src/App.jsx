@@ -46,7 +46,7 @@ function App() {
             <Route index element={<HomeAdmin />} />
             <Route path="transaksi" element={<TransaksiAdmin />} />
             <Route
-              path="transaksi-detail"
+              path="transaksi-detail/:uid"
               element={<DetailTransaksi />}
             ></Route>
             <Route path="menu" element={<MenuAdmin />}></Route>
