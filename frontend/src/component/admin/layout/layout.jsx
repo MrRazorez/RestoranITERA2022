@@ -19,16 +19,9 @@ function AdminLayout() {
   var [userName, setUserName] = useState("");
   var [loading, setLoading] = useState(true);
   var navigate = useNavigate();
-  const [isDesktop, setDesktop] = useState(window.innerWidth < 992);
-
-  const updateMedia = () => {
-    setDesktop(window.innerWidth < 992);
-  };
 
   useEffect(() => {
     Tokens();
-    window.addEventListener("resize", updateMedia);
-    return () => window.removeEventListener("resize", updateMedia);
   });
 
   async function Tokens() {
@@ -43,9 +36,7 @@ function AdminLayout() {
             if (res.status !== 202) {
               window.location.replace("/login");
             } else {
-              const data = jwt_decode(
-                window.localStorage.getItem("restoran_token")
-              );
+              const data = jwt_decode(window.localStorage.getItem("restoran_token"));
               setUserName(data.userName);
             }
           });
@@ -101,11 +92,7 @@ function AdminLayout() {
         </div>
       ) : (
         <>
-          <nav
-            id="sidebar"
-            className={`${sidebar ? "active" : ""}`}
-            style={{ position: "fixed", height: "100%", zIndex: "999" }}
-          >
+          <nav id="sidebar" className={`${sidebar ? "active" : ""}`}>
             <div className="custom-menu">
               <button
                 type="button"
@@ -197,21 +184,7 @@ function AdminLayout() {
             </div>
           </nav>
 
-          <div
-            id="content"
-            className="p-3 p-sm-5 pt-5 mt-4 mt-sm-0"
-            style={
-              isDesktop
-                ? {
-                    marginLeft: "0",
-                    height: "100%",
-                  }
-                : {
-                    marginLeft: sidebar ? "0" : "19%",
-                    height: "100%",
-                  }
-            }
-          >
+          <div id="content" className="p-3 p-sm-5 pt-5 mt-4 mt-sm-0">
             <Outlet />
           </div>
         </>

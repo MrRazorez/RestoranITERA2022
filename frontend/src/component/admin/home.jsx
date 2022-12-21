@@ -39,7 +39,7 @@ export class HomeAdmin extends Component {
         <Row className="mb-5">
           {this.data.map((e, i) => {
             return (
-              <Col className="p-1 p-sm-2" key={i}>
+              <Col className="p-2" key={i}>
                 <Card className="py-4" style={{ backgroundColor: `${e.bg}` }}>
                   <Card.Body className="text-center">
                     <Card.Title className="fs-1 text-white">

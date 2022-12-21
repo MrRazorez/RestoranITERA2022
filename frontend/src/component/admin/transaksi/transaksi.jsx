@@ -8,20 +8,18 @@ export class TransaksiAdmin extends Component {
     super();
     this.state = {
       order: [],
-      orderList: {},
-    };
+      orderList: {}
+    }
   }
 
   async callAPI() {
     try {
-      await axios
-        .get(process.env.REACT_APP_BACKEND_URL + "/order")
-        .then((res) => {
-          this.setState({
-            order: Object.keys(res.data.order),
-            orderList: res.data.order,
-          });
+      await axios.get(process.env.REACT_APP_BACKEND_URL+"/order").then((res) => {
+        this.setState({
+          order: Object.keys(res.data.order),
+          orderList: res.data.order
         });
+      });
     } catch (error) {
       console.log(error.response);
     }
@@ -36,10 +34,9 @@ export class TransaksiAdmin extends Component {
       <div>
         <BreadcrumbComponent />
         <h6 className="mb-5">Halaman tentang pesanan yang telah masuk</h6>
-
         {this.state.order.map((data, index) => (
           <a
-            href={"/admin/transaksi-detail/" + data}
+            href={"/admin/transaksi-detail/"+data}
             key={index}
             className="d-flex p-4 my-3 text-decoration-none btn btn-outline-primary fs-4 align-items-center "
           >

@@ -15,31 +15,27 @@ export class DetailTransaksi extends Component {
     this.state = {
       order: [],
       dataMenu: {},
-      total: 0,
+      total: 0
     };
     this.uid = "";
   }
 
   async callAPI() {
     try {
-      await axios
-        .get(process.env.REACT_APP_BACKEND_URL + "/menu")
-        .then((res) => {
-          this.setState({ dataMenu: res.data.menu });
-        });
+      await axios.get(process.env.REACT_APP_BACKEND_URL+"/menu").then((res) => {
+        this.setState({ dataMenu: res.data.menu });
+      });
 
-      await axios
-        .get(process.env.REACT_APP_BACKEND_URL + "/order/" + this.uid)
-        .then((res) => {
-          this.setState({
-            order: res.data.order,
-          });
+      await axios.get(process.env.REACT_APP_BACKEND_URL+"/order/" + this.uid).then((res) => {
+        this.setState({
+          order: res.data.order
         });
+      });
 
       var totalAmount = 0;
-
+      
       for (let i = 0; i < this.state.order.length; i++) {
-        totalAmount +=
+        totalAmount += 
           this.state.dataMenu[this.state.order[i].uid].harga *
           this.state.order[i].total;
       }
@@ -69,13 +65,10 @@ export class DetailTransaksi extends Component {
           Halaman tentang detail dari pesanan yang telah masuk
         </h6>
 
-        {this.state.dataMenu !== null ? (
+        { this.state.dataMenu !== null ? (
           this.state.order.map((data, index) => {
             return (
-              <Row
-                key={index}
-                className="border border-1 shadow-sm mx-sm-3 mx-1 p-3 mb-3"
-              >
+              <Row key={index} className="border border-1 shadow-sm mx-3 p-3 mb-3">
                 <Col className="col-12 col-sm p-2 d-flex justify-content-center">
                   <img
                     src={this.state.dataMenu[data.uid].ref}
@@ -84,55 +77,46 @@ export class DetailTransaksi extends Component {
                   />
                 </Col>
                 <Col className="p-2 d-flex flex-column justify-content-center">
-                  <h5 style={{ fontSize: "1rem" }}>
-                    {this.state.dataMenu[data.uid].nama}
-                  </h5>
-                  <h6 style={{ fontSize: "1rem" }}>
-                    {uangRupiah(this.state.dataMenu[data.uid].harga)}
-                  </h6>
+                  <h5>{this.state.dataMenu[data.uid].nama}</h5>
+                  <h6>{uangRupiah(this.state.dataMenu[data.uid].harga)}</h6>
                 </Col>
                 <Col className="col-2 col-sm p-2 d-flex align-items-center justify-content-center">
                   <h5>x {data.total}</h5>
                 </Col>
                 <Col className="p-2 d-flex align-items-center justify-content-center">
-                  <h6>
-                    {uangRupiah(
-                      this.state.dataMenu[data.uid].harga * data.total
-                    )}
-                  </h6>
+                  <h6>{uangRupiah(this.state.dataMenu[data.uid].harga*data.total)}</h6>
                 </Col>
               </Row>
-            );
-          })
-        ) : (
-          <Row></Row>
-        )}
+            )})) : (<Row></Row>)}
 
-        <Row className="border border-1 shadow-sm mx-sm-3 mx-1 p-3 mb-3">
-          <Col className="offset-sm-6 d-flex justify-content-center align-items-center">
-            <h6>Total</h6>
+        <Row className="border border-1 shadow-sm mx-3 p-3 mb-3">
+          <Col className="d-none d-sm-flex justify-content-center align-items-center">
+            {" "}
           </Col>
           <Col className="d-flex justify-content-center align-items-center">
-            <h6>{uangRupiah(this.state.total)}</h6>
+            <h5>Total</h5>
+          </Col>
+          <Col className="d-flex justify-content-center align-items-center">
+            <h5>{uangRupiah(this.state.total)}</h5>
           </Col>
         </Row>
 
-        <Row className="border border-1 shadow-sm mx-sm-3 mx-1 p-3 mb-5 ">
-          <Col className="col-12 col-sm pe-sm-5">
+        <Row className="border border-1 shadow-sm mx-3 p-3 mb-5 ">
+          <Col className="pe-5">
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <h6 className="mb-3">Bayar</h6>
               <Form.Control
-                type="number"
+                type="text"
                 style={{ backgroundColor: "#E5E3F6" }}
                 placeholder="Masukkan Nominal Bayar"
               />
             </Form.Group>
           </Col>
-          <Col className="col-12 col-sm">
+          <Col>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <h6 className="mb-3">Kembali</h6>
               <Form.Control
-                type="number"
+                type="text"
                 style={{ backgroundColor: "#D9D9D9" }}
                 placeholder="Nilai Kembalian"
                 disabled
