@@ -30,12 +30,12 @@ export class Login extends Component {
     const { navigate } = this.props;
     try {
       await axios
-        .post("http://localhost:8000/users/login", {
+        .post(process.env.REACT_APP_BACKEND_URL + "/users/login", {
           email: this.state.email,
           password: this.state.password,
         })
         .then((res) => {
-          window.sessionStorage.setItem("token", res.data.token);
+          window.localStorage.setItem("restoran_token", res.data.token);
           navigate("/admin");
         });
     } catch (error) {
@@ -48,7 +48,7 @@ export class Login extends Component {
   }
 
   componentDidMount() {
-    if (window.sessionStorage.getItem("token")) {
+    if (window.localStorage.getItem("restoran_token")) {
       window.location.replace("/admin");
     }
   }
@@ -63,7 +63,7 @@ export class Login extends Component {
           height: "100%",
           background: `url(${resto})`,
           backgroundRepeat: "no-repeat",
-          backgroundSize: "100%",
+          backgroundSize: "cover",
         }}
       >
         <div

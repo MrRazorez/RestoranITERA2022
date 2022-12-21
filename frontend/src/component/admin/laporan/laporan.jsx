@@ -1,20 +1,22 @@
 import React, { Component } from "react";
 import { Row, Table, Button } from "react-bootstrap";
 import { AiFillFileText } from "react-icons/ai";
+import print from "./print";
 
 export class LaporanAdmin extends Component {
-  data = [
-    {
-      id: "DR1",
-      tgl: "22-07-2022",
-      name: "Sate",
-      order: "Sate",
-      price: "Rp. 2.000",
-    },
-  ];
-
-  print() {
-    window.print();
+  constructor() {
+    super();
+    this.state = {
+      data: [
+        {
+          id: "DR1",
+          tgl: "22-07-2022",
+          name: "Sate",
+          order: "Sate",
+          price: "Rp. 2.000",
+        },
+      ],
+    };
   }
 
   render() {
@@ -28,7 +30,10 @@ export class LaporanAdmin extends Component {
             <Button
               variant="danger"
               className=" d-flex align-items-center py-2 px-3"
-              onClick={this.print}
+              target="_blank"
+              onClick={() => {
+                print(this.state.data);
+              }}
             >
               <AiFillFileText className="fs-4 me-2" />
               Cetak
@@ -48,7 +53,7 @@ export class LaporanAdmin extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.data.map((e, i) => {
+            {this.state.data.map((e, i) => {
               return (
                 <tr key={i}>
                   <td>{i + 1}</td>

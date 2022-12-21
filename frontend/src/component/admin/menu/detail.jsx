@@ -22,7 +22,7 @@ class Detail extends React.Component {
 
   async callAPI() {
     try {
-      await axios.get("http://localhost:8000/menu/" + this.uid).then((res) => {
+      await axios.get(process.env.REACT_APP_BACKEND_URL+"/menu/" + this.uid).then((res) => {
         this.setState({ nama: res.data.menu.nama });
         this.setState({ jenis: res.data.menu.jenis });
         this.setState({ harga: res.data.menu.harga });
@@ -100,6 +100,7 @@ class Detail extends React.Component {
               style={{
                 width: "12rem",
               }}
+              alt=""
             />
           </p>
         ) : (

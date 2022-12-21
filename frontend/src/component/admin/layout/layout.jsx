@@ -19,30 +19,39 @@ function AdminLayout() {
   var [userName, setUserName] = useState("");
   var [loading, setLoading] = useState(true);
   var navigate = useNavigate();
+  const [isDesktop, setDesktop] = useState(window.innerWidth < 992);
+
+  const updateMedia = () => {
+    setDesktop(window.innerWidth < 992);
+  };
 
   useEffect(() => {
     Tokens();
+    window.addEventListener("resize", updateMedia);
+    return () => window.removeEventListener("resize", updateMedia);
   });
 
   async function Tokens() {
-    if (window.sessionStorage.getItem("token")) {
+    if (window.localStorage.getItem("restoran_token")) {
       try {
         await axios
           .post("http://localhost:8000/users/token", {
-            token: window.sessionStorage.getItem("token"),
+            token: window.localStorage.getItem("restoran_token"),
           })
           .then((res) => {
             setLoading(false);
             if (res.status !== 202) {
               window.location.replace("/login");
             } else {
-              const data = jwt_decode(window.sessionStorage.getItem("token"));
+              const data = jwt_decode(
+                window.localStorage.getItem("restoran_token")
+              );
               setUserName(data.userName);
             }
           });
       } catch (error) {
         if (error.response) {
-          window.sessionStorage.removeItem("token");
+          window.localStorage.removeItem("restoran_token");
           window.location.replace("/login");
         }
       }
@@ -57,11 +66,11 @@ function AdminLayout() {
     try {
       await axios
         .post("http://localhost:8000/users/logout", {
-          token: window.sessionStorage.getItem("token"),
+          token: window.localStorage.getItem("restoran_token"),
         })
         .then((res) => {
           if (res.status === 202) {
-            window.sessionStorage.removeItem("token");
+            window.localStorage.removeItem("restoran_token");
             navigate("/login");
           }
         });
@@ -92,7 +101,11 @@ function AdminLayout() {
         </div>
       ) : (
         <>
-          <nav id="sidebar" className={`${sidebar ? "active" : ""}`}>
+          <nav
+            id="sidebar"
+            className={`${sidebar ? "active" : ""}`}
+            style={{ position: "fixed", height: "100%", zIndex: "999" }}
+          >
             <div className="custom-menu">
               <button
                 type="button"
@@ -184,7 +197,21 @@ function AdminLayout() {
             </div>
           </nav>
 
-          <div id="content" className="p-3 p-sm-5 pt-5 mt-4 mt-sm-0">
+          <div
+            id="content"
+            className="p-3 p-sm-5 pt-5 mt-4 mt-sm-0"
+            style={
+              isDesktop
+                ? {
+                    marginLeft: "0",
+                    height: "100%",
+                  }
+                : {
+                    marginLeft: sidebar ? "0" : "19%",
+                    height: "100%",
+                  }
+            }
+          >
             <Outlet />
           </div>
         </>
