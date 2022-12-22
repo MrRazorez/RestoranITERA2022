@@ -30,7 +30,7 @@ export class Login extends Component {
     const { navigate } = this.props;
     try {
       await axios
-        .post(process.env.REACT_APP_BACKEND_URL+"/users/login", {
+        .post(process.env.REACT_APP_BACKEND_URL + "/users/login", {
           email: this.state.email,
           password: this.state.password,
         })
@@ -63,7 +63,7 @@ export class Login extends Component {
           height: "100%",
           background: `url(${resto})`,
           backgroundRepeat: "no-repeat",
-          backgroundSize: "100%",
+          backgroundSize: "cover",
         }}
       >
         <div

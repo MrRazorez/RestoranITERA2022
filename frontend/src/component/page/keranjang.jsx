@@ -178,11 +178,9 @@ class Keranjang extends React.Component {
                         width={150}
                       />
                     </Col>
-                    <Col className="p-2 d-flex flex-column align-items-center justify-content-center">
+                    <Col className=" p-2 d-flex flex-column align-items-center justify-content-center">
                       <h5>{this.state.dataMenu[e.uid].nama}</h5>
-                      <h6>
-                        {uangRupiah(this.state.dataMenu[e.uid].harga)} /porsi
-                      </h6>
+                      <h6>{uangRupiah(this.state.dataMenu[e.uid].harga)} </h6>
                     </Col>
                     <Col className="p-2 d-flex align-items-center justify-content-center">
                       <Button variant="outline-primary">

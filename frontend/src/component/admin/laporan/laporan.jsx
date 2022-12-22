@@ -3,35 +3,34 @@ import React, { Component } from "react";
 import { Row, Table, Button } from "react-bootstrap";
 import { AiFillFileText } from "react-icons/ai";
 import { uangRupiah } from "../../page/currency";
+import print from "./print";
 
 export class LaporanAdmin extends Component {
   constructor() {
     super();
     this.state = {
       report: [],
-      reportData: {}
-    }
+      reportData: {},
+    };
   }
 
   async callAPI() {
     try {
-      await axios.get(process.env.REACT_APP_BACKEND_URL+"/report").then((res) => {
-        console.log(res.data);
-        this.setState({ reportData: res.data.report});
-        this.setState({ report: Object.keys(res.data.report) });
-      });
+      await axios
+        .get(process.env.REACT_APP_BACKEND_URL + "/report")
+        .then((res) => {
+          console.log(res.data);
+          this.setState({ reportData: res.data.report });
+          this.setState({ report: Object.keys(res.data.report) });
+        });
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
         alert("Terjadi kesalahan server. Silahkan refresh kembali!");
       } else if (error.code === "ERR_BAD_REQUEST") {
         alert(error.response.data.status);
         document.location.reload();
-      }      
+      }
     }
-  }
-
-  print() {
-    window.print();
   }
 
   componentDidMount() {
@@ -49,7 +48,8 @@ export class LaporanAdmin extends Component {
             <Button
               variant="danger"
               className=" d-flex align-items-center py-2 px-3"
-              onClick={this.print}
+              target="_blank"
+              onClick={() => print(this.state.report, this.state.reportData)}
             >
               <AiFillFileText className="fs-4 me-2" />
               Cetak
