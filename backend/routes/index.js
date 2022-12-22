@@ -16,6 +16,8 @@ router.post('/menu', menuController.insertMenu);
 router.put('/menu/:uid', menuController.updateMenu);
 router.delete('/menu/:uid/:foto', menuController.deleteMenu);
 
+router.get('/total', menuController.getTotalMenu);
+
 router.get('/order', orderController.getOrder);
 router.get('/order/:uid', orderController.getSpecOrder);
 router.post('/order', orderController.sendOrder);
