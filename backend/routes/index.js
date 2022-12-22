@@ -20,4 +20,7 @@ router.get('/order', orderController.getOrder);
 router.get('/order/:uid', orderController.getSpecOrder);
 router.post('/order', orderController.sendOrder);
 
+router.get('/report', orderController.reporter);
+router.post('/report', orderController.assignOrder);
+
 module.exports = router;
