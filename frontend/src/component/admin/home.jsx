@@ -40,7 +40,6 @@ export class HomeAdmin extends Component {
   async callAPI() {
     try {
       await axios.get(process.env.REACT_APP_BACKEND_URL+"/total").then((res) => {
-        console.log(res.data);
         this.setState({
           data: [
             {
@@ -58,7 +57,14 @@ export class HomeAdmin extends Component {
               value: res.data.dessert,
               bg: "#C86A26",
             },
-          ]
+          ],
+          feedback: []
+        });
+      });
+
+      await axios.get(process.env.REACT_APP_BACKEND_URL+"/feedback").then((res) => {
+        this.setState({
+          feedback: res.data.feedback
         });
       });
     } catch (error) {
