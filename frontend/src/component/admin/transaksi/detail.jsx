@@ -13,11 +13,14 @@ export class DetailTransaksi extends Component {
   constructor() {
     super();
     this.state = {
+      customer: "",
       order: [],
       dataMenu: {},
-      total: 0
+      total: 0,
+      pay: 0
     };
     this.uid = "";
+    this.charge = 0;
   }
 
   async callAPI() {
@@ -28,6 +31,7 @@ export class DetailTransaksi extends Component {
 
       await axios.get(process.env.REACT_APP_BACKEND_URL+"/order/" + this.uid).then((res) => {
         this.setState({
+          customer: res.data.customer,
           order: res.data.order
         });
       });
@@ -41,6 +45,7 @@ export class DetailTransaksi extends Component {
       }
 
       this.setState({ total: totalAmount });
+      this.charge = this.state.pay - totalAmount;
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
         alert("Terjadi kesalahan server. Silahkan refresh kembali!");
@@ -49,6 +54,43 @@ export class DetailTransaksi extends Component {
         document.location.reload();
       }
     }
+  }
+
+  async assignOrder(data) {
+    try {
+      await axios.post(process.env.REACT_APP_BACKEND_URL+"/report", data).then(
+        () => {
+          window.location.replace("/admin/transaksi");
+        }
+      );
+    } catch (error) {
+      this.notification("Laporan Gagal Terkirim!");
+    }
+  }
+
+  async notification(status) {
+    const showNotification = () => {
+      const notification = new Notification("Pesan dari Syran Resto", {
+        body: status,
+      });
+
+      setTimeout(() => {
+        notification.close();
+      }, 3 * 1000);
+    };
+
+    let granted = false;
+
+    if (Notification.permission === "granted") {
+      granted = true;
+    } else if (Notification.permission !== "denied") {
+      let permission = await Notification.requestPermission();
+      granted = permission === "granted" ? true : false;
+    }
+
+    granted
+      ? showNotification()
+      : console.log("Anda harus izinkan Notifikasi dalam browser anda!");
   }
 
   componentDidMount() {
@@ -106,9 +148,15 @@ export class DetailTransaksi extends Component {
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <h6 className="mb-3">Bayar</h6>
               <Form.Control
-                type="text"
+                type="number"
                 style={{ backgroundColor: "#E5E3F6" }}
                 placeholder="Masukkan Nominal Bayar"
+                value={this.state.pay}
+                onChange={(e) => {
+                    this.setState({pay: e.target.value});
+                    this.charge = e.target.value - this.state.total;
+                  }
+                }
               />
             </Form.Group>
           </Col>
@@ -119,6 +167,7 @@ export class DetailTransaksi extends Component {
                 type="text"
                 style={{ backgroundColor: "#D9D9D9" }}
                 placeholder="Nilai Kembalian"
+                value={uangRupiah(this.charge)}
                 disabled
               />
             </Form.Group>
@@ -126,7 +175,22 @@ export class DetailTransaksi extends Component {
         </Row>
 
         <div className="d-flex mb-5 pe-4  justify-content-end">
-          <Button variant="success">Bayar Sekarang</Button>
+          <Button variant="success" onClick={
+            () => {
+              if (this.state.pay >= this.state.total) {
+                const data = {
+                  uid: this.uid,
+                  customer: this.state.customer,
+                  total: this.state.total,
+                  pay: Number(this.state.pay),
+                  charge: this.charge
+                };
+                this.assignOrder(data);
+              } else {
+                this.notification("BAYAR DULU!!!!");
+              }
+            }
+          }>Bayar Sekarang</Button>
         </div>
       </div>
     );

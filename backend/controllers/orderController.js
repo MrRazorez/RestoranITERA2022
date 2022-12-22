@@ -14,7 +14,7 @@ async function getOrder(req, res, next) {
             store[key[i]] = value[key[i]].customer;
         }
 
-        res.status(200).json({order: store});   
+        res.status(200).json({order: store});
     } catch (error) {
         res.status(400).json({status: error});
     }
@@ -25,7 +25,7 @@ async function getSpecOrder(req, res, next) {
         var dbGet = await fireDB.get(fireDB.child(fireDB.ref(db, "order"), req.params["uid"]));
         const spray = dbGet.val();
 
-        res.status(200).json({order: spray.value});
+        res.status(200).json({customer: spray.customer, order: spray.value});
     } catch (error) {
         res.status(400).json({status: error});
     }
@@ -44,8 +44,38 @@ async function sendOrder(req, res, next) {
     }
 }
 
+async function reporter(req, res, next) {
+    try {
+        var dbGet = await fireDB.get(fireDB.child(fireDB.ref(db), "report"));
+
+        res.status(200).json({report: dbGet.val()});
+    } catch (error) {
+        res.status(400).json(error);
+    }
+}
+
+async function assignOrder(req, res, next) {
+    try {
+        var { uid, customer, total, pay, charge } = req.body;
+        const date = new Date();
+
+        await fireDB.push(fireDB.ref(db, 'report'), {
+            customer, total, pay, charge,
+            date: date.toLocaleDateString("id-ID")
+        });
+
+        await fireDB.set(fireDB.ref(db, 'order/'+uid), null);
+
+        res.status(201).json({msg: "Laporan telah terekam!"});        
+    } catch (error) {
+        res.status(404).json({msg: "GAGAL!"});
+    }
+}
+
 module.exports = {
     getOrder,
     getSpecOrder,
-    sendOrder
+    sendOrder,
+    reporter,
+    assignOrder
 }
