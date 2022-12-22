@@ -23,6 +23,35 @@ async function getSpecMenu(req, res, next) {
     }
 }
 
+async function getTotalMenu(req, res, next) {
+    try {
+        var food = 0, drink = 0, dessert = 0;
+
+        {
+            var dbGet = await fireDB.get(fireDB.child(fireDB.ref(db), "menu"));
+            var search = dbGet.val();
+        
+            for (let i in search) {
+                if (search[i].jenis === "food") {
+                    food += 1;
+                }
+
+                if (search[i].jenis === "drink") {
+                    drink += 1;
+                }
+
+                if (search[i].jenis === "dessert") {
+                    dessert += 1;
+                }
+            }
+        }
+
+        res.status(200).json({food, drink, dessert});
+    } catch (error) {
+        res.status(400).json({status: error});
+    }
+}
+
 async function insertMenu(req, res, next) {
     try {
         var file = req.files.foto;
@@ -129,6 +158,7 @@ async function deleteMenu(req, res, next) {
 module.exports = {
     getMenu,
     getSpecMenu,
+    getTotalMenu,
     insertMenu,
     updateMenu,
     deleteMenu
