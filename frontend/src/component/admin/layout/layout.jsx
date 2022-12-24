@@ -20,9 +20,16 @@ function AdminLayout() {
   var [loading, setLoading] = useState(true);
   var navigate = useNavigate();
 
+  const [width, setWidth] = useState(window.innerWidth);
+  const updateDimensions = () => {
+    setWidth(window.innerWidth);
+  };
+
   useEffect(() => {
     Tokens();
-  });
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
 
   async function Tokens() {
     if (window.localStorage.getItem("restoran_token")) {
@@ -36,7 +43,9 @@ function AdminLayout() {
             if (res.status !== 202) {
               window.location.replace("/login");
             } else {
-              const data = jwt_decode(window.localStorage.getItem("restoran_token"));
+              const data = jwt_decode(
+                window.localStorage.getItem("restoran_token")
+              );
               setUserName(data.userName);
             }
           });
@@ -92,7 +101,15 @@ function AdminLayout() {
         </div>
       ) : (
         <>
-          <nav id="sidebar" className={`${sidebar ? "active" : ""}`}>
+          <nav
+            id="sidebar"
+            className={`${sidebar ? "active" : ""}`}
+            style={{
+              position: "fixed",
+              zIndex: "999",
+              height: "100%",
+            }}
+          >
             <div className="custom-menu">
               <button
                 type="button"
@@ -184,7 +201,19 @@ function AdminLayout() {
             </div>
           </nav>
 
-          <div id="content" className="p-3 p-sm-5 pt-5 mt-4 mt-sm-0">
+          <div
+            id="content"
+            className="p-3 p-sm-5 pt-5 mt-4 mt-sm-0"
+            style={
+              width > 992
+                ? {
+                    marginLeft: sidebar ? "0" : "20%",
+                  }
+                : {
+                    marginLeft: 0,
+                  }
+            }
+          >
             <Outlet />
           </div>
         </>

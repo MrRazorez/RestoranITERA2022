@@ -33,11 +33,13 @@ class Home extends React.Component {
 
   async callAPI() {
     try {
-      await axios.get(process.env.REACT_APP_BACKEND_URL+"/menu").then((res) => {
-        this.setState({ dataMenu: res.data.menu });
-        this.setState({ menu: Object.keys(res.data.menu) });
-        this.setState({ loading: false });
-      });
+      await axios
+        .get(process.env.REACT_APP_BACKEND_URL + "/menu")
+        .then((res) => {
+          this.setState({ dataMenu: res.data.menu });
+          this.setState({ menu: Object.keys(res.data.menu) });
+          this.setState({ loading: false });
+        });
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
         alert("Terjadi kesalahan server. Silahkan refresh kembali!");
@@ -75,7 +77,7 @@ class Home extends React.Component {
           </div>
         ) : (
           <>
-            <Container className="my-5">
+            <Container className="my-5 pb-5">
               <Row className="flex-column-reverse flex-md-row mb-4 mx-2 mx-sm-0">
                 <Col md={4} className="p-2">
                   <Form.Select
@@ -106,7 +108,7 @@ class Home extends React.Component {
                 </Col>
               </Row>
 
-              <Row>
+              <Row className="pb-4">
                 {this.state.dataMenu !== null ? (
                   this.state.menu
                     .filter(
@@ -198,12 +200,14 @@ class Home extends React.Component {
               >
                 <Modal.Header closeButton></Modal.Header>
                 <Modal.Body className="d-flex flex-column align-items-center">
-                  <img src={this.state.popupImg} width="60%" alt=""/>
+                  <img src={this.state.popupImg} width="60%" alt="" />
                   <div className="fs-3 mt-3">{this.state.popupNama}</div>
                   <div className="fs-5 text-primary">
                     {this.state.popupKategori}
                   </div>
-                  <div className="fs-5">{uangRupiah(this.state.popupHarga)}</div>
+                  <div className="fs-5">
+                    {uangRupiah(this.state.popupHarga)}
+                  </div>
                 </Modal.Body>
                 <Modal.Footer>
                   <Button
