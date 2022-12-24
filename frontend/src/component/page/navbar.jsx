@@ -13,7 +13,7 @@ function NavbarScreen() {
       expand="lg"
     >
       <Container fluid>
-        <Navbar.Brand href="#" className="fs-4 fw-bold">
+        <Navbar.Brand href="/" className="fs-4 fw-bold">
           Syran <span className="text-info">Resto.</span>
         </Navbar.Brand>
         <Navbar.Toggle />

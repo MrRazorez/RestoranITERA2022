@@ -12,7 +12,7 @@ function FooterScreen() {
               <div className="col-md-5 col-lg-5  mx-auto mb-4">
                 <h6 className="fw-bold mb-4 fs-5">Syran Resto</h6>
                 <p>
-                  restoran Bandar Lampung yang menampilkan konsep restoran
+                  Restoran Bandar Lampung yang menampilkan konsep restoran
                   indoor dan outdoor dengan pemandangan Kota Bandar Lampung.
                   lokasi yang luas sangat cocok dijadikan untuk berkumpul dengan
                   rekan atau keluarga
